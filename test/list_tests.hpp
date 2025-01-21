@@ -1,5 +1,6 @@
 #pragma once
 #include "container.hpp"
+#include <vector>
 #include <gtest/gtest.h>
 
 TEST (ListCont, Create)
@@ -166,4 +167,38 @@ TEST (ListCont, Update)
         j++;
     }
     
+}
+
+// TEST (ListCont, CopyConstructor)
+// {
+//     const size_t count = 10;
+//     ListCont <int> test{};
+//     for (size_t i = 0; i < count; i++){
+//         test.push_back(i);
+//     }
+//     ListCont <int> test2{};
+
+//     test2 = test;
+
+//     int j = 0;
+//     for (size_t i = 0; i < 10; i++){
+//         ASSERT_EQ(test2[i], test[i]);
+//         j++;
+//     }
+
+// }
+
+TEST (ListCont, MoveConstructor)
+{
+    const size_t count = 10;
+    ListCont <int> test;
+    for (size_t i = 0; i < count; i++){
+        test.push_back(i);
+    }
+    std::vector <ListCont <int>> v_test;
+    v_test.push_back(test);
+    int j = 0;
+    for (size_t i = 0; i < count; i++){
+        ASSERT_EQ(v_test[i][i], test[i]);
+    }
 }
