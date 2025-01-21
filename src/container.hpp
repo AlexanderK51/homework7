@@ -300,6 +300,8 @@ inline ListCont<T> &ListCont<T>::operator=(ListCont &&moved) noexcept
     {
         data = std::move(moved.data);
         m_size = moved.m_size;
+
+        moved.data = nullptr;
     }
 
     return *this;
