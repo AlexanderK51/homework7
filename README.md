@@ -21,7 +21,7 @@ cmake --build .
 ./containers_tests --gtest_filter=ListCont.* --gtest_repeat=1000 --gtest_break_on_failure  
 
 #report
-./containers_tests --gtest_output=«xml:out.xml»  
+./containers_tests --gtest_output=xml:out.xml 
   
 #random
 ./containers_tests --gtest_shuffle
