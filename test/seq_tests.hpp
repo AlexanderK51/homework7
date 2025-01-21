@@ -169,3 +169,38 @@ TEST (SeqCont, Update)
     }
     
 }
+
+TEST (SeqCont, CopyConstructor)
+{
+    const size_t count = 10;
+    SeqCont <int> test{};
+    for (size_t i = 0; i < count; i++){
+        test.push_back(i);
+   }
+   SeqCont <int> test2{};
+
+   test2 = test;
+
+   for (size_t i = 1; i <= 10; i++){
+        ASSERT_EQ(test2[i], test[i]);
+    }
+
+}
+
+TEST (SeqCont, MoveConstructor)
+{
+    const size_t count = 10;
+    SeqCont <int> test;
+    for (size_t i = 0; i < count; i++){
+        test.push_back(i);
+    }
+    SeqCont <int> test2;
+    test2 = std::move(test);
+    
+    int j = 0;
+    for (size_t i = 1; i <= count; i++){
+        ASSERT_EQ(test2[i], j);
+        j++;
+    }
+    
+}

@@ -47,6 +47,7 @@ class ListCont
     Node* data;
 
     void freememory(){
+
         if (data){
             
             for(size_t i = m_size; i > 0; i--){
@@ -58,6 +59,7 @@ class ListCont
             }
             //delete data;
             //для отладки
+            m_size = 0;
             std::cout << "clear mem of list con" << std::endl;
         }
     }
@@ -93,10 +95,12 @@ inline SeqCont<T>::~SeqCont()
 
 template <typename T>
 inline SeqCont<T>::SeqCont(const SeqCont &copy) : 
-    data(copy.data[m_size]),
+    data(new T[copy.m_size]),
     m_size(copy.m_size)
 {
-    data = copy.data;
+    for (size_t i = 0; i < m_size; ++i) {
+        data[i] = copy.data[i];
+    }
 }
 
 template <typename T>
@@ -104,8 +108,11 @@ inline SeqCont<T> &SeqCont<T>::operator=(const SeqCont &copy)
 {
     if (this != &copy){
         freememory();
-        data = copy.data;
         m_size = copy.m_size;
+        data = new T [m_size];
+        for (size_t i = 0; i < m_size; ++i) {
+        data[i] = copy.data[i];
+        }
     }
     return *this;
 }
@@ -116,7 +123,7 @@ inline SeqCont<T>::SeqCont(SeqCont &&moved) noexcept :
     m_size(moved.m_size)
 {
     moved.data = nullptr;
-    m_size = 0;
+    moved.m_size = 0;
 }
 
 template <typename T>
@@ -124,8 +131,12 @@ inline SeqCont<T> &SeqCont<T>::operator=(SeqCont &&moved) noexcept
 {
     if (this != &moved)
     {
+        freememory();
         data = std::move(moved.data);
         m_size = moved.m_size;
+
+        moved.data = nullptr;
+        moved.m_size = 0;
     }
 
     return *this;
@@ -267,10 +278,18 @@ inline ListCont<T>::~ListCont()
 
 template <typename T>
 inline ListCont<T>::ListCont(const ListCont &copy) : 
-    data(copy.data),
-    m_size(copy.m_size)
+    data(nullptr),
+    m_size(0)
 {
-    data = copy.data;
+    Node* temp_data = copy.data;
+        
+    for (size_t i = copy.m_size; i > 1; i--){
+        temp_data = temp_data->prev;
+    }
+    for (size_t j = 1; j <= copy.m_size; j++){
+        push_back(temp_data->data);
+        temp_data = temp_data->next;
+    }
 }
 
 template <typename T>
@@ -278,19 +297,26 @@ inline ListCont<T> &ListCont<T>::operator=(const ListCont &copy)
 {
     if (this != &copy){
         freememory();
-        data = copy.data;
-        m_size = copy.m_size;
+        Node* temp_data = copy.data;
+        
+        for (size_t i = copy.m_size; i > 1; i--){
+            temp_data = temp_data->prev;
+        }
+        for (size_t j = 1; j <= copy.m_size; j++){
+            push_back(temp_data->data);
+            temp_data = temp_data->next;
+        }
     }
     return *this;
 }
 
 template <typename T>
 inline ListCont<T>::ListCont(ListCont &&moved) noexcept :
-    data(std::move(moved.data)),
+    data(moved.data),
     m_size(moved.m_size)
 {
     moved.data = nullptr;
-    m_size = 0;
+    moved.m_size = 0;
 }
 
 template <typename T>
@@ -298,10 +324,12 @@ inline ListCont<T> &ListCont<T>::operator=(ListCont &&moved) noexcept
 {
     if (this != &moved)
     {
-        data = std::move(moved.data);
+        freememory();
+        data = moved.data;
         m_size = moved.m_size;
 
         moved.data = nullptr;
+        moved.m_size = 0;
     }
 
     return *this;

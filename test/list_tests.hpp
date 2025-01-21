@@ -1,6 +1,5 @@
 #pragma once
 #include "container.hpp"
-#include <vector>
 #include <gtest/gtest.h>
 
 TEST (ListCont, Create)
@@ -169,24 +168,22 @@ TEST (ListCont, Update)
     
 }
 
-// TEST (ListCont, CopyConstructor)
-// {
-//     const size_t count = 10;
-//     ListCont <int> test{};
-//     for (size_t i = 0; i < count; i++){
-//         test.push_back(i);
-//     }
-//     ListCont <int> test2{};
+TEST (ListCont, CopyConstructor)
+{
+    const size_t count = 10;
+    ListCont <int> test{};
+    for (size_t i = 0; i < count; i++){
+        test.push_back(i);
+   }
+   ListCont <int> test2{};
 
-//     test2 = test;
+   test2 = test;
 
-//     int j = 0;
-//     for (size_t i = 0; i < 10; i++){
-//         ASSERT_EQ(test2[i], test[i]);
-//         j++;
-//     }
+   for (size_t i = 1; i <= 10; i++){
+        ASSERT_EQ(test2[i], test[i]);
+    }
 
-// }
+}
 
 TEST (ListCont, MoveConstructor)
 {
@@ -195,10 +192,13 @@ TEST (ListCont, MoveConstructor)
     for (size_t i = 0; i < count; i++){
         test.push_back(i);
     }
-    std::vector <ListCont <int>> v_test;
-    v_test.push_back(test);
+    ListCont <int> test2;
+    test2 = std::move(test);
+    
     int j = 0;
-    for (size_t i = 0; i < count; i++){
-        ASSERT_EQ(v_test[i][i], test[i]);
+    for (size_t i = 1; i <= count; i++){
+        ASSERT_EQ(test2[i], j);
+        j++;
     }
+    
 }
